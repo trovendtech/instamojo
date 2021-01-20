@@ -25,3 +25,9 @@ const getTokenID = async req => {
         });
     })
 }
+
+After reading Token ID,
+Called below two for getting the order id.
+
+Insta.createPayment - Pass the Order Data along with bearer token
+Insta.createPaymentforSDK - Pass the Order ID return from above along with bearer token
