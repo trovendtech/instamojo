@@ -1,9 +1,13 @@
 var request = require('request');
-// const axios = require('axios').default;
 
 var HOSTS = {
   'production': "https://api.instamojo.com/v2/",
   'test': "https://test.instamojo.com/v2/"
+};
+
+var AUTHHOSTS = {
+  'production': "https://api.instamojo.com/oauth2/token/",
+  'test': "https://test.instamojo.com/oauth2/token/"
 };
 
 var API = {
@@ -17,6 +21,10 @@ var API = {
 module.exports = {
   CURRENT_TOKEN: '',
   CURRENT_HOST: 'production',
+
+  AuthHEADERS: {
+    'Content-Type': "application/json"
+  },
 
   AuthHEADERS: {
     'Content-Type': "application/x-www-form-urlencoded",
@@ -35,11 +43,24 @@ module.exports = {
     this.CURRENT_TOKEN = resToken;
   },
 
+  createToken: function (data, callback) {
+    request.post({
+      headers: this.AuthHEADERS,
+      url: AUTHHOSTS[this.CURRENT_HOST],
+      form: data
+    }, function (error, response, body) {
+      var result = body;
+      callback(error, result);
+    });
+  },
+
   createPayment: function (data, callback) {
     request.post({
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Bearer ' + this.CURRENT_TOKEN },
-      url:  HOSTS[this.CURRENT_HOST] + API.createPayment,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer ' + this.CURRENT_TOKEN
+      },
+      url: HOSTS[this.CURRENT_HOST] + API.createPayment,
       form: data
     }, function (error, response, body) {
       var result = body;
@@ -49,9 +70,11 @@ module.exports = {
 
   createPaymentforSDK: function (data, callback) {
     request.post({
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Bearer ' + this.CURRENT_TOKEN },
-      url:  HOSTS[this.CURRENT_HOST] + API.paymentforSDK,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer ' + this.CURRENT_TOKEN
+      },
+      url: HOSTS[this.CURRENT_HOST] + API.paymentforSDK,
       form: data
     }, function (error, response, body) {
       var result = body;
@@ -70,7 +93,7 @@ module.exports = {
 
   getAllPaymentRequests: function (callback) {
     request.get({
-      // headers: this.HEADERS,
+      headers: this.HEADERS,
       url: HOSTS[this.CURRENT_HOST] + API.paymentStatus
     }, function (error, response, body) {
       var result = JSON.parse(body);
@@ -80,7 +103,7 @@ module.exports = {
 
   getPaymentRequestStatus: function (id, callback) {
     request.get({
-      //   headers: this.HEADERS,
+      headers: this.HEADERS,
       url: HOSTS[this.CURRENT_HOST] + API.paymentStatus + id + '/'
     }, function (error, response, body) {
       var result = JSON.parse(body);
@@ -90,7 +113,7 @@ module.exports = {
 
   getPaymentDetails: function (payment_request_id, payment_id, callback) {
     request.get({
-      //    headers: this.HEADERS,
+      headers: this.HEADERS,
       url: HOSTS[this.CURRENT_HOST] + API.paymentStatus + payment_request_id + '/' + payment_id + '/'
     }, function (error, response, body) {
       var result = JSON.parse(body);
@@ -100,7 +123,7 @@ module.exports = {
 
   createRefund: function (refundRequest, callback) {
     request.post({
-      //   headers: this.HEADERS,
+      headers: this.HEADERS,
       url: HOSTS[this.CURRENT_HOST] + API.refunds + '/',
       form: refundRequest
     }, function (error, response, body) {
@@ -111,7 +134,7 @@ module.exports = {
 
   getAllRefunds: function (callback) {
     request.get({
-      //   headers: this.HEADERS,
+      headers: this.HEADERS,
       url: HOSTS[this.CURRENT_HOST] + API.refunds
     }, function (error, response, body) {
       var result = JSON.parse(body);
@@ -121,7 +144,7 @@ module.exports = {
 
   getRefundDetails: function (id, callback) {
     request.get({
-      //   headers: this.HEADERS,
+      headers: this.HEADERS,
       url: HOSTS[this.CURRENT_HOST] + API.refunds + id + '/'
     }, function (error, response, body) {
       var result = JSON.parse(body);
