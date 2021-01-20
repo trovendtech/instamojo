@@ -5,7 +5,7 @@ so we came up with this package which helps every developer who is trying to int
 
 How to Use?
 
-const InstaAuth = require('instamojo-nodejs/instamojoauth');
+const InstaAuth = require('instamojo_v2/instamojoauth');
 
 const getTokenID = async req => {
     var data = new Insta.AuthTokenRequestData();
